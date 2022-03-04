@@ -12,4 +12,4 @@ COPY . $APP/
 
 WORKDIR $APP
 
-# RUN bundle install
+RUN bundle install
