@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get "/registrations", to: "registrations#index"
+  post "/registrations/signup", to:"registrations#signup"
 
   get "/registrations/show", to: "registrations#show"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
