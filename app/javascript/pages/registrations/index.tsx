@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 
 const App = () => (
     <div>
-        <div className="app">Hello Rails!</div>
+        <div className="app">Hello Rails!!!</div>
         <Button variant="contained" >clickme</Button>
     </div>
 );
