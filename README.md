@@ -32,3 +32,20 @@ https://qiita.com/suketa/items/837eb97bdb48dd8c4688#%E3%82%AA%E3%83%97%E3%82%B7%
 
 rails7にアップグレードしたログ ( esbuild + propshaft )
 https://zenn.dev/yubel/articles/0106422714ec3e
+
+## 認証系
+
+
+[Rails でのパスワード認証のセキュリティ対策](https://zenn.dev/cobachie/articles/security-measures-for-password-authentication)
+
+# Git関連
+
+## Commit の prefix
+feat: 新しい機能
+fix: バグの修正
+docs: ドキュメントのみの変更
+style: 空白、フォーマット、セミコロン追加など
+refactor: 仕様に影響がないコード改善(リファクタ)
+perf: パフォーマンス向上関連
+test: テスト関連
+chore: ビルド、補助ツール、ライブラリ関連
