@@ -12,8 +12,9 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       DB_HOST_NAME: db
+      TZ: 'Asia/Tokyo'
     # command: sh -c "rm -f tmp/pids/server.pid && rails s -b 0.0.0.0 -p 3000"
-    command: sh -c "rm -f tmp/pids/server.pid"
+    command: sh -c "rm -f tmp/pids/server.pid && bin/dev"
     tty: true
     ports:
       - 3000:3000
