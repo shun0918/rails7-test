@@ -1,0 +1,15 @@
+{
+    "folders": [
+        {
+            "name": "rails-board",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "tailwindCSS.experimental.classRegex": [
+            ["classnames\\(([^)]*)\\)", "'([^']*)'"]
+        ]
+    }
+}
