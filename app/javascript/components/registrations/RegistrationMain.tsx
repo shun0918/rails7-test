@@ -1,27 +1,41 @@
-
-import { Grid, TextField } from '@mui/material';
+import { Grid, Link, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from "react";
 import { apiClient } from '../../libs/api/client';
-import { User } from '../../types/models/User';
-import UserList from './UserList';
+import { useParams } from '../../utils/query';
 
 const RegistrationMain = () => {
 
-    const [users, setUsers] = useState<User[]>([]);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const show = async () => {
-        const res = await apiClient.get<User[]>('/registrations/show');
-        setUsers(res || []);
+    const [hasCreateAccount, sethasCreateAccount] = useState(false);
+    const setRegistrationType = () => {
+        const params = useParams();
+        if(params.get('type') === 'signup') sethasCreateAccount(true);
     }
-    const onSignup = async () => {
-        const res = await apiClient.post<User>('/registrations/signup', {
-            email,
-            password,
-        });
-        console.log(res);
+    const enter = () => {
+        window.location.href = '/users';
+    }
+    const userParams = () => ({
+        email,
+        password,
+    });
+    const signup = async () => {
+        const res = await apiClient.post('/registrations/signup', userParams());
+        if(res.errors) {
+            console.error(res.errors);
+            return;
+        }
+        enter();
+    }
+    const login = async () => {
+        const res = await apiClient.post('/login', userParams());
+        if(res.errors) {
+            console.error(res.errors);
+            return;
+        }
+        enter();
     }
     const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -29,8 +43,11 @@ const RegistrationMain = () => {
     const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     }
+    const onSubmit = () => {
+        hasCreateAccount ? signup() : login();
+    }
     useEffect(() => {
-        show();
+        setRegistrationType();
     }, []);
     return (
         <div className="h-screen flex items-center justify-center">
@@ -38,6 +55,7 @@ const RegistrationMain = () => {
                 <Box padding={7} component="form" sx={{
                     width: 473,
                 }}>
+                    <Typography variant="h1" mb={2} fontSize={16}>{ hasCreateAccount ? 'Sign up' : 'Login'}</Typography>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField onChange={onChangeEmail} label="Email" fullWidth variant="outlined" />
@@ -46,12 +64,18 @@ const RegistrationMain = () => {
                             <TextField onChange={onChangePassword} label="Password" fullWidth variant="outlined" type="password"/>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button variant="contained" size="large" fullWidth disableElevation onClick={onSignup}>Signup now</Button>
+                            <Button variant="contained" size="large" fullWidth disableElevation onClick={onSubmit}>{ hasCreateAccount ?'Create account' : 'Login'}</Button>
                         </Grid>
                     </Grid>
-                </Box>
-                <Box>
-                    <UserList users={users}/>
+                    <div>
+                        {
+                            hasCreateAccount ? (
+                                <Link href="/login">Already have Account: Login</Link>
+                            ) : (
+                                <Link href="/?type=signup">Create account</Link>
+                            )
+                        }
+                    </div>
                 </Box>
             </div>
         </div>
