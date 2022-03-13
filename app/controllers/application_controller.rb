@@ -6,9 +6,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   def current_user
-    p 'cookies:'
-    p session[:user_remember_token]
-    p cookies[:user_remember_token]
     remember_token = User.encrypt(cookies[:user_remember_token])
     @current_user ||= User.find_by(remember_token: remember_token)
   end
