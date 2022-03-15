@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_one :profile
+  has_many :image
   has_secure_password validations: true
 
   validates :email, presence: true, uniqueness: true
