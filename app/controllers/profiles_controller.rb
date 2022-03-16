@@ -1,25 +1,38 @@
 class ProfilesController < ApplicationController
-  def create
-    if params[:image].present?
-      @image = Image.new(path: params[:image])
+
+  def update
+
+    @user_file = UserFile.find_by(user_id: @current_user.id)
+    if params[:source].present?
+      p 'source exists!'
+      if @user_file.present?
+        @user_file.update(user_file_params)
+      else
+        @user_file = UserFile.new(user_file_params)
+        @user_file.save
+      end
     end
 
     # 作成
-    if Profile.exists?(user_id: @current_user.id)
-      @profile = Profile.update(profile_params(image_id))
+    @profile = Profile.find_by(user_id: @current_user.id)
+    if @profile.present?
+      p 'exists!'
+      @profile.update(profile_params)
     else
-      @profile = Profile.new(profile_params(image_id))
+      p 'new!'
+      @profile = Profile.new(profile_params)
+      @profile.save
     end
 
-    render json: create_response({success: true, profile: @profile})
+    render json: create_response(res: {success: true, profile: @profile})
   end
 
   private
-    def image_id
-      @image.presence? @image.id : nil
+    def profile_params
+      params.require(:profile).permit(:name, :bio, :phone).merge(user_id: @current_user.id, user_file_id: @user_file.present? ? @user_file.id : nil)
+    end
 
-
-    def profile_params(image_id: nil)
-      params.require(:profile).permit(:name, :bio, :phone, :image).marge(user_id: @current_user.id, image_id:)
+    def user_file_params
+      params.require(:user_file).permit(:source).merge(user_id: @current_user.id)
     end
 end
