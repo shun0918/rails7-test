@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   # API
   get "/users/show", to: "users#show"
   get "/users/profile/me", to: "users#me"
-  post "/users/profile/me/update", to: "profile#update"
+  post "/users/profile/me", to: "profiles#update"
   post "/registrations/signup", to:"registrations#create"
 
   post   '/login',   to: 'sessions#create'

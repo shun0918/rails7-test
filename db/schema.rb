@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_16_050949) do
+ActiveRecord::Schema[7.0].define(version: 2022_03_16_093827) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,24 +39,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_16_050949) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "images", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "path"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_images_on_user_id"
-  end
-
   create_table "profiles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "bio"
     t.string "phone"
     t.bigint "user_id", null: false
-    t.bigint "image_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["image_id"], name: "index_profiles_on_image_id"
+    t.string "add_reference"
+    t.bigint "user_file_id"
+    t.index ["user_file_id"], name: "index_profiles_on_user_file_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "user_files", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_files_on_user_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -69,7 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_16_050949) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "images", "users"
-  add_foreign_key "profiles", "images"
+  add_foreign_key "profiles", "user_files"
   add_foreign_key "profiles", "users"
+  add_foreign_key "user_files", "users"
 end
