@@ -9,6 +9,7 @@ const RegistrationMain = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const [hasCreateAccount, sethasCreateAccount] = useState(false);
     const setRegistrationType = () => {
         const params = useParams();
@@ -22,17 +23,19 @@ const RegistrationMain = () => {
         password,
     });
     const signup = async () => {
-        const res = await apiClient.post('/registrations/signup', userParams());
+        const res = await apiClient.post<{success?: boolean}>('/registrations/signup', userParams());
         if(res.errors) {
-            console.error(res.errors);
+            console.error(res.errors.errors?.message);
+            setError(res.errors.errors?.message ?? '');
             return;
         }
         enter();
     }
     const login = async () => {
-        const res = await apiClient.post('/login', userParams());
+        const res = await apiClient.post<{success?: boolean}>('/login', userParams());
         if(res.errors) {
-            console.error(res.errors);
+            console.error(res.errors.errors?.message);
+            setError(res.errors.errors?.message ?? '');
             return;
         }
         enter();
@@ -66,6 +69,9 @@ const RegistrationMain = () => {
                         <Grid item xs={12}>
                             <Button variant="contained" size="large" fullWidth disableElevation onClick={onSubmit}>{ hasCreateAccount ?'Create account' : 'Login'}</Button>
                         </Grid>
+                        <Grid item xs={12}>
+                            <div className='text-red-500'>{error}</div>
+                        </Grid>
                     </Grid>
                     <div>
                         {
@@ -73,8 +79,8 @@ const RegistrationMain = () => {
                                 <Link href="/login">Already have Account: Login</Link>
                             ) : (
                                 <Link href="/?type=signup">Create account</Link>
-                            )
-                        }
+                                )
+                            }
                     </div>
                 </Box>
             </div>

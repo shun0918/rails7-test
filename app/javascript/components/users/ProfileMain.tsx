@@ -3,6 +3,7 @@ import { apiClient } from "../../libs/api/client";
 import { Profile } from "../../types/models/Profile";
 import { User } from '../../types/models/User';
 import { FormDataModel } from "../../types/utils/object/form-data-model";
+import Header from "../global/Header";
 import ProfileEditer from "./ProfileEditer";
 import ProfileInfo from "./ProfileInfo";
 
@@ -71,6 +72,7 @@ const ProfileMain = () => {
     },[]);
     return (
         <div>
+            <Header />
             <ProfileInfo
                 user={user}
                 profile={profile}

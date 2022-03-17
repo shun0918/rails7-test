@@ -3,9 +3,11 @@ import { RailsFormData, railsFormDataFactory } from "../../utils/factory/rails-f
 import csrfToken from "../rails/csrf-token";
 
 type ErrorResponse = {
-    error?: string;
-    exception?: string;
-    status?: HttpStatusCode;
+    errors?: {
+        message: string;
+    };
+    // exception?: string;
+    // status?: HttpStatusCode;
 }
 type ResponseBase<T> = {
     data?: T;
@@ -35,7 +37,7 @@ const HTTP_STATUS_CODE = {
 type HttpStatusCode = typeof HTTP_STATUS_CODE[keyof typeof HTTP_STATUS_CODE];
 
 const hasError = (res: ResponseData<any>): res is ErrorResponse => {
-    return 'status' in res;
+    return 'errors' in res;
 }
 
 const BASE_OPTIONS: RequestInit = {
@@ -83,15 +85,18 @@ const fetchApi = async <T>({ method, url, body }: FetchProps): Promise<ResponseB
         method,
         body,
     }
-    return (await doFetch(url, requestOptions));
+    return (await doFetch<T>(url, requestOptions));
 };
 
 export const apiClient = {
     async get<T = any>(url: string, body?: any) {
         return (await fetchApi<T>({method: 'GET', url,}));
     },
-    async post<T = any>(url: string, body: any) {
+    async post<T = any>(url: string, body: any = {}) {
         return (await fetchApi<T>({method: 'POST', url, body: JSON.stringify(body ?? {})}));
+    },
+    async delete<T = any>(url: string, body: any = {}) {
+        return (await fetchApi<T>({method: 'DELETE', url, body: JSON.stringify(body ?? {})}));
     },
     async upload<T = any>(url: string, models: FormDataModel[]) {
         const formData = railsFormDataFactory(models);
