@@ -4,7 +4,6 @@ class ProfilesController < ApplicationController
 
     @user_file = UserFile.find_by(user_id: @current_user.id)
     if params[:source].present?
-      p 'source exists!'
       if @user_file.present?
         @user_file.update(user_file_params)
       else
@@ -16,10 +15,8 @@ class ProfilesController < ApplicationController
     # 作成
     @profile = Profile.find_by(user_id: @current_user.id)
     if @profile.present?
-      p 'exists!'
       @profile.update(profile_params)
     else
-      p 'new!'
       @profile = Profile.new(profile_params)
       @profile.save
     end
