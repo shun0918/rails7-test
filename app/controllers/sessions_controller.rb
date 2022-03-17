@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
       render json: create_response(res: {success: true})
     else
       flash.now[:danger] = t('.flash.invalid_password')
-      remder json: create_response(error: {message: 'ログインに失敗しました。'})
+      render json: create_response(error: {message: 'ログインに失敗しました。'})
     end
   end
 
