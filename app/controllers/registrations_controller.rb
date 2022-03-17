@@ -1,9 +1,9 @@
 class RegistrationsController < ApplicationController
   skip_before_action :verify_authenticity_token
   skip_before_action :require_sign_in!, only: [:index, :create, :hoge]
+  before_action :require_unlogin!, only: [:index]
 
   def index
-    cookies.permanent[:hoge] = 'hogehoge.jp'
   end
 
   def create

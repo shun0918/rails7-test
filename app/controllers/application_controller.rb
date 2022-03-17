@@ -34,6 +34,11 @@ class ApplicationController < ActionController::Base
     @current_user.present?
   end
 
+  protected
+    def require_unlogin!
+      redirect_to users_path if signed_in?
+    end
+
   private
 
     def require_sign_in!
