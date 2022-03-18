@@ -7,8 +7,8 @@ module.exports = {
     './app/javascript/components/**/*.{js,jsx,ts,tsx}',
   ],
   important: '#root',
-  // theme: {
-  //   extend: {},
-  // },
+  theme: {
+    body: ['"Roboto"', '"Helvetica"', '"Arial"', 'sans-s'],
+  },
   // plugins: [],
 }
