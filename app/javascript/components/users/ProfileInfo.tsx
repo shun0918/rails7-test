@@ -5,9 +5,10 @@ import { User } from "../../types/models/User";
 type Props = {
   user?: User,
   profile?: Profile
+  avatorUrl?: string
 }
 
-const ProfileInfo = ({ user, profile }: Props) => (
+const ProfileInfo = ({ user, profile, avatorUrl }: Props) => (
   <div>
       { user ? (
           <div>
@@ -15,6 +16,9 @@ const ProfileInfo = ({ user, profile }: Props) => (
               <div>
                   <p>{user.email}</p>
                   <p>{user.password}</p>
+                  { avatorUrl ?
+                    <img src={avatorUrl} width="84" height="84" alt="avator" />
+                  : null}
               </div>
           </div>
       ) : null }

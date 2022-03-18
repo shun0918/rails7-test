@@ -11,10 +11,13 @@ type ProfileRes = {
     get: {
         user: User
         profile: Profile
+        avator: {
+            url: string;
+        };
     };
     post: {
         success: boolean;
-    }
+    };
 }
 const ProfileMain = () => {
     const [user, setUser] = useState<User>();
@@ -23,6 +26,7 @@ const ProfileMain = () => {
     const [name, setName] = useState<string>('');
     const [bio, setBio] = useState<string>('');
     const [phone, setPhone] = useState<string>('');
+    const [avatorUrl, setAvatorUrl] = useState<string>();
     const [image, setImage] = useState<File>();
 
     const fetchUserInfo = async () => {
@@ -38,6 +42,7 @@ const ProfileMain = () => {
         }
         setUser(res.data.user);
         setProfile(res.data.profile);
+        setAvatorUrl(res.data.avator.url);
     };
     const updateProfile = async () => {
         const models: FormDataModel[] = [
@@ -76,6 +81,7 @@ const ProfileMain = () => {
             <ProfileInfo
                 user={user}
                 profile={profile}
+                avatorUrl={avatorUrl}
             />
             <ProfileEditer
                 name={name}

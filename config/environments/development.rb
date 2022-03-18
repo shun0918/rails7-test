@@ -69,4 +69,6 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.web_console.whitelisted_ips =  '0.0.0.0/0' # PCのIP
+
+  default_url_options[:host] = "localhost:3000"
 end
