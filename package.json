@@ -13,12 +13,14 @@
     "postcss": "^8.4.8",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "tailwindcss": "^3.0.23"
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.6.2"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds",
     "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css",
-    "build:css:prod": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build:css:prod": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "lint": "eslint './app/javascript/**/*.ts' './app/javascript/**/*.tsx'"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
