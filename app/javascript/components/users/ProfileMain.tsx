@@ -1,3 +1,4 @@
+import { Box, Container, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { apiClient } from "../../libs/api/client";
 import { Profile } from "../../types/models/Profile";
@@ -76,25 +77,30 @@ const ProfileMain = () => {
         fetchUserInfo();
     },[]);
     return (
-        <div>
+        <Box>
             <Header />
-            <ProfileInfo
-                user={user}
-                profile={profile}
-                avatorUrl={avatorUrl}
-            />
-            <ProfileEditer
-                name={name}
-                bio={bio}
-                phone={phone}
-                image={image}
-                onChangeName={setName}
-                onChangeBio={setBio}
-                onChangePhone={setPhone}
-                onChangeImage={setImage}
-                onSubmitEdit={onSubmitEdit}
-            />
-        </div>
+            <Box sx={{ paddingY: 8}}>
+                <Container maxWidth="lg">
+                    <Typography variant="h1" component="h1" sx={{ fontSize: 48, marginBlockEnd: 4 }}>Profile</Typography>
+                    <ProfileInfo
+                        user={user}
+                        profile={profile}
+                        avatorUrl={avatorUrl}
+                        />
+                    <ProfileEditer
+                        name={name}
+                        bio={bio}
+                        phone={phone}
+                        image={image}
+                        onChangeName={setName}
+                        onChangeBio={setBio}
+                        onChangePhone={setPhone}
+                        onChangeImage={setImage}
+                        onSubmitEdit={onSubmitEdit}
+                        />
+                </Container>
+            </Box>
+        </Box>
     );
 };
 

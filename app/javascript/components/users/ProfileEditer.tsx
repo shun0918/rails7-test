@@ -51,7 +51,7 @@ const ProfileEditer = ({ name, bio, phone, image, onChangeName, onChangeBio, onC
 
   return (
     <div>
-      <Box padding={7} component="form">
+      <Box component="form">
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField onChange={_onChangeName} value={name} label="Name" fullWidth variant="outlined" />
