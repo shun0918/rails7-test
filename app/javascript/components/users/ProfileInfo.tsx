@@ -1,31 +1,29 @@
-import { Box, Grid, styled, Table, TableCell, TableRow, Typography } from "@mui/material";
-import React from "react";
-import { Profile } from "../../types/models/Profile";
-import { User } from "../../types/models/User";
+import { Box, styled, Table, TableCell, TableRow } from '@mui/material';
+import React from 'react';
+import { Profile } from '../../types/models/Profile';
+import { User } from '../../types/models/User';
 
 type Props = {
-  user?: User,
-  profile?: Profile
-  avatorUrl?: string
-}
+  user?: User;
+  profile?: Profile;
+  avatorUrl?: string;
+};
 
 const _LabelCell = styled(TableCell)({
   color: '#BDBDBD',
   fontSize: 18,
   paddingY: 4,
-  paddingX: 4
-})
+  paddingX: 4,
+});
 
 const ProfileInfo = ({ user, profile, avatorUrl }: Props) => (
-  <Box sx={{ border: 1, borderColor: '#BDBDBD', borderRadius: 3}}>
+  <Box sx={{ border: 1, borderColor: '#BDBDBD', borderRadius: 3 }}>
     <Table>
       <TableRow>
         <_LabelCell>Avator</_LabelCell>
-        <TableCell>{
-          avatorUrl
-          ? <img src={avatorUrl} width="84" height="84" alt="avator" />
-          : null
-        }</TableCell>
+        <TableCell>
+          {avatorUrl ? <img src={avatorUrl} width="84" height="84" alt="avator" /> : null}
+        </TableCell>
       </TableRow>
       <TableRow>
         <_LabelCell>Name</_LabelCell>

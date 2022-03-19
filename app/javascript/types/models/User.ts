@@ -1,6 +1,6 @@
-import { Model } from ".";
+import { Model } from '.';
 
 export interface User extends Model {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }

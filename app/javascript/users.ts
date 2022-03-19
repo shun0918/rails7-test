@@ -1,1 +1,1 @@
-import "./pages/users/index"
+import './pages/users/index';

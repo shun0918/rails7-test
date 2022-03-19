@@ -1,4 +1,4 @@
-import { Model } from ".";
+import { Model } from '.';
 
 export interface Profile extends Model {
   user_id: number;

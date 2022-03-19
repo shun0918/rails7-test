@@ -1,1 +1,1 @@
-import "./pages/registrations/index"
+import './pages/registrations/index';
