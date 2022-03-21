@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Profile } from '../../types/models/Profile';
 import { User } from '../../types/models/User';
+import UploadButton from '../ui/buttons/UploadButton';
 
 type Props = {
   user?: User;
@@ -34,6 +35,18 @@ const ProfileInfo: React.FC<Props> = ({ user, profile, avatorUrl, onSubmitEdit }
   const [bio, setBio] = useState<string>(profile?.bio ?? '');
   const [phone, setPhone] = useState<string>(profile?.phone ?? '');
   const [email, setEmail] = useState<string>(user?.email ?? '');
+  const [avator, setAvator] = useState<File>();
+  const [newAvatorUrl, setNewAvatorUrl] = useState<string>('');
+  const createAvatorUrl = () => {
+    if (!avator) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (typeof event?.target?.result === 'string') {
+        setNewAvatorUrl(event.target.result);
+      }
+    };
+    reader.readAsDataURL(avator);
+  };
   const _onSubmitEdit = () => {
     onSubmitEdit(
       {
@@ -44,9 +57,21 @@ const ProfileInfo: React.FC<Props> = ({ user, profile, avatorUrl, onSubmitEdit }
         bio,
         phone,
       },
+      avator,
     );
   };
-  useEffect(() => {}, [user, profile, avatorUrl]);
+  useEffect(() => {
+    const initValues = () => {
+      setName(profile?.name ?? '');
+      setBio(profile?.bio ?? '');
+      setPhone(profile?.phone ?? '');
+      setEmail(user?.email ?? '');
+    };
+    initValues();
+  }, [user, profile, avatorUrl]);
+  useEffect(() => {
+    createAvatorUrl();
+  }, [avator]);
 
   return (
     <Box sx={{ border: 1, borderColor: '#BDBDBD', borderRadius: 3 }}>
@@ -75,6 +100,34 @@ const ProfileInfo: React.FC<Props> = ({ user, profile, avatorUrl, onSubmitEdit }
           </_Row>
         </TableHead>
         <TableBody>
+          <_Row name="Avator">
+            {avatorUrl && !newAvatorUrl ? (
+              <img
+                src={avatorUrl}
+                className="object-contain object-center"
+                width="84"
+                height="84"
+              />
+            ) : null}
+            {newAvatorUrl ? (
+              <img
+                src={newAvatorUrl}
+                className="object-contain
+                    object-center"
+                width="84"
+                height="84"
+              />
+            ) : null}
+            {editMode ? (
+              <div className="mt-4">
+                <UploadButton
+                  onChange={(e) => {
+                    setAvator(e.target.files?.item(0) ?? undefined);
+                  }}
+                />
+              </div>
+            ) : null}
+          </_Row>
           <_Row name="Name">
             {editMode ? (
               <TextField
