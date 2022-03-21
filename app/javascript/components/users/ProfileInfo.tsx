@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  styled,
   TableBody,
   TableCell,
   TableRow,
@@ -20,18 +19,16 @@ type Props = {
   onSubmitEdit: (user: User, profile: Profile, avator?: File) => void;
 };
 
-const _LabelCell = styled(TableCell)({
-  color: '#BDBDBD',
-  fontSize: 18,
-  paddingY: 4,
-  paddingX: 4,
-});
-const _Field = styled(TextField)({
-  fullWidth: true,
-  valiant: 'outlined',
-});
+const _Row: React.FC<{ name: string }> = ({ name, children }) => {
+  return (
+    <TableRow>
+      <TableCell sx={{ color: '#BDBDBD', fontSize: 18, padding: 4 }}>{name}</TableCell>
+      <TableCell>{children}</TableCell>
+    </TableRow>
+  );
+};
 
-const ProfileInfo = ({ user, profile, avatorUrl, onSubmitEdit }: Props) => {
+const ProfileInfo: React.FC<Props> = ({ user, profile, avatorUrl, onSubmitEdit }) => {
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState<string>(profile?.name ?? '');
   const [bio, setBio] = useState<string>(profile?.bio ?? '');
@@ -55,94 +52,93 @@ const ProfileInfo = ({ user, profile, avatorUrl, onSubmitEdit }: Props) => {
     <Box sx={{ border: 1, borderColor: '#BDBDBD', borderRadius: 3 }}>
       <Table>
         <TableHead>
-          <TableRow>
-            <_LabelCell>Profile</_LabelCell>
-            <TableCell>
+          <_Row name="Profile">
+            <Button
+              variant={editMode ? 'outlined' : 'contained'}
+              size="large"
+              disableElevation
+              onClick={() => setEditMode(!editMode)}
+            >
+              {editMode ? 'Cancel' : 'Edit'}
+            </Button>
+            {editMode ? (
               <Button
-                variant={editMode ? 'outlined' : 'contained'}
+                sx={{ marginLeft: 2 }}
+                variant="contained"
                 size="large"
                 disableElevation
-                onClick={() => setEditMode(!editMode)}
+                onClick={_onSubmitEdit}
               >
-                {editMode ? 'Cancel' : 'Edit'}
+                Save
               </Button>
-              {editMode ? (
-                <Button variant="contained" size="large" disableElevation onClick={_onSubmitEdit}>
-                  Save
-                </Button>
-              ) : null}
-            </TableCell>
-          </TableRow>
+            ) : null}
+          </_Row>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <_LabelCell>Name</_LabelCell>
-            <TableCell>
-              {editMode ? (
-                <_Field
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                  value={name}
-                  label="Name"
-                  type="text"
-                />
-              ) : (
-                <span>{profile?.name}</span>
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <_LabelCell>Bio</_LabelCell>
-            <TableCell>
-              {editMode ? (
-                <_Field
-                  onChange={(e) => {
-                    setBio(e.target.value);
-                  }}
-                  value={bio}
-                  label="Bio"
-                  type="text"
-                />
-              ) : (
-                <span>{profile?.bio}</span>
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <_LabelCell>Phone</_LabelCell>
-            <TableCell>
-              {editMode ? (
-                <_Field
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                  value={phone}
-                  label="Phone"
-                  type="text"
-                />
-              ) : (
-                <span>{profile?.phone}</span>
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <_LabelCell>Email</_LabelCell>
-            <TableCell>
-              {editMode ? (
-                <_Field
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  value={email}
-                  label="Email"
-                  type="text"
-                />
-              ) : (
-                <span>{user?.email}</span>
-              )}
-            </TableCell>
-          </TableRow>
+          <_Row name="Name">
+            {editMode ? (
+              <TextField
+                variant="outlined"
+                fullWidth
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+                value={name}
+                label="Name"
+                type="text"
+              />
+            ) : (
+              <p>{profile?.name}</p>
+            )}
+          </_Row>
+          <_Row name="Bio">
+            {editMode ? (
+              <TextField
+                variant="outlined"
+                fullWidth
+                onChange={(e) => {
+                  setBio(e.target.value);
+                }}
+                value={bio}
+                label="Bio"
+                type="text"
+              />
+            ) : (
+              <p>{profile?.bio}</p>
+            )}
+          </_Row>
+          <_Row name="Phone">
+            {editMode ? (
+              <TextField
+                variant="outlined"
+                fullWidth
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
+                value={phone}
+                label="Phone"
+                type="text"
+              />
+            ) : (
+              <p>{profile?.phone}</p>
+            )}
+          </_Row>
+          <_Row name="Email">
+            {editMode ? (
+              <TextField
+                variant="outlined"
+                fullWidth
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                value={email}
+                label="Email"
+                type="text"
+              />
+            ) : (
+              <p>{user?.email}</p>
+            )}
+          </_Row>
         </TableBody>
       </Table>
     </Box>
