@@ -22,55 +22,19 @@ type ProfileRes = {
 const ProfileMain = () => {
   const [user, setUser] = useState<User>();
   const [profile, setProfile] = useState<Profile>();
-
-  // const [name, setName] = useState<string>('');
-  // const [bio, setBio] = useState<string>('');
-  // const [phone, setPhone] = useState<string>('');
   const [avatorUrl, setAvatorUrl] = useState<string>();
-  // const [image, setImage] = useState<File>();
 
   const fetchUserInfo = async () => {
-    const res = await apiClient.get<ProfileRes['get']>('/users/profile/me');
+    const res = await apiClient.get<ProfileRes['get']>('/users/me');
     if (!res.data) {
       console.error(res.errors);
       return;
     }
-    // if (res.data.profile) {
-    //   setName(res.data.profile.name || '');
-    //   setBio(res.data.profile.bio || '');
-    //   setPhone(res.data.profile.phone || '');
-    // }
     setUser(res.data.user);
     setProfile(res.data.profile);
     setAvatorUrl(res.data.avator.url);
   };
-  // const updateProfile = async () => {
-  //   const models: FormDataModel[] = [
-  //     {
-  //       model: 'profile',
-  //       data: {
-  //         name,
-  //         bio,
-  //         phone,
-  //       },
-  //     },
-  //     {
-  //       model: 'user_file',
-  //       data: {
-  //         source: image,
-  //       },
-  //     },
-  //   ];
-  //   const res = await apiClient.upload<ProfileRes['post']>('/users/profile/me', models);
-  //   if (res.errors) {
-  //     alert('Failed to update your profile. Please retry.');
-  //     console.error(res.errors);
-  //     return;
-  //   }
-  //   fetchUserInfo();
-  // };
   const onSubmitEdit = async ({ email }: User, { name, bio, phone }: Profile, avator?: File) => {
-    // updateProfile(user, profile, avator);
     const models: FormDataModel[] = [
       {
         model: 'profile',
@@ -93,7 +57,7 @@ const ProfileMain = () => {
         },
       },
     ];
-    const res = await apiClient.upload<ProfileRes['post']>('/users/profile/me', models);
+    const res = await apiClient.upload<ProfileRes['post']>('/users/me', models);
     if (res.errors) {
       alert('Failed to update your profile. Please retry.');
       console.error(res.errors);
