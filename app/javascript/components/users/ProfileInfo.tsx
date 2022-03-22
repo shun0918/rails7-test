@@ -66,6 +66,7 @@ const ProfileInfo: React.FC<Props> = ({ user, profile, avatorUrl, onSubmitEdit }
       setBio(profile?.bio ?? '');
       setPhone(profile?.phone ?? '');
       setEmail(user?.email ?? '');
+      setEditMode(false);
     };
     initValues();
   }, [user, profile, avatorUrl]);

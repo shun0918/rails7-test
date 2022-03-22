@@ -16,7 +16,11 @@ type ProfileRes = {
     };
   };
   post: {
-    success: boolean;
+    user: User;
+    profile: Profile;
+    avator: {
+      url: string;
+    };
   };
 };
 const ProfileMain = () => {
@@ -63,7 +67,11 @@ const ProfileMain = () => {
       console.error(res.errors);
       return;
     }
-    fetchUserInfo();
+    if (res.data) {
+      setUser(res.data.user);
+      setProfile(res.data.profile);
+      setAvatorUrl(res.data.avator.url);
+    }
   };
   useEffect(() => {
     fetchUserInfo();

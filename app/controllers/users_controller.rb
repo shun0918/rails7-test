@@ -30,6 +30,8 @@ class UsersController < ApplicationController
 
     @current_user.update(user_params)
     @profile.save
+
+    render json: { user: @current_user, profile: @profile, avator: {url: @profile.avator_url}}
   end
 
   private
