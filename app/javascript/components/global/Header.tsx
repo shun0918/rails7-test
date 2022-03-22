@@ -16,9 +16,18 @@ const Header = () => {
       <div className="container py-4 mx-auto">
         <div className="flex items-center justify-between">
           <div>Rails Board</div>
-          <Button onClick={onSignout} variant="contained" component="span">
-            Sign out
-          </Button>
+          <ul className="flex justify-end items-center">
+            <li className="mr-4">
+              <a href="/tasks" className="underline text-blue-600">
+                Task board
+              </a>
+            </li>
+            <li>
+              <Button onClick={onSignout} variant="contained" component="span">
+                Sign out
+              </Button>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

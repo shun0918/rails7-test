@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get "/registrations", to: "registrations#index"
   get "/users", to: "users#index"
   get "/login", to: "registrations#index"
+  get "/tasks", to: "tasks#index"
 
   # API
   get "/users/show", to: "users#show"
