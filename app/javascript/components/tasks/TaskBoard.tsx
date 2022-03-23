@@ -1,16 +1,17 @@
 import { Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Status } from '../../types/models/Status';
-import { Task } from '../../types/models/Task';
+import { Task, EditableTask } from '../../types/models/Task';
 import TaskCard from './TaskCard';
 
 type Props = {
   tasks: Task[];
   status: Status[];
+  onCreateTask: (task: Task) => void;
 };
 
-const TaskBoard: React.FC<Props> = ({ tasks, status }) => {
-  const [taskMap, setTaskMap] = useState<Record<number, Task[]>>({});
+const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
+  const [taskMap, setTaskMap] = useState<Record<number, (Task | EditableTask)[]>>({});
   const [dummyId, setDummyId] = useState(0);
   const getDummyId = () => {
     const currentId = dummyId;
@@ -28,9 +29,18 @@ const TaskBoard: React.FC<Props> = ({ tasks, status }) => {
           title: 'task',
           user_id: 2,
           status_id: statusId,
+          editable: true,
         },
       ],
     });
+  };
+  const onSaveTask = (task: Task) => {
+    const newTasks = [...taskMap[task.status_id].slice(0, -1), task];
+    setTaskMap({
+      ...taskMap,
+      [task.status_id]: newTasks,
+    });
+    onCreateTask(task);
   };
   useEffect(() => {
     const getTaskMap = (): Record<number, Task[]> => {
@@ -64,7 +74,7 @@ const TaskBoard: React.FC<Props> = ({ tasks, status }) => {
             <div className="grid gap-y-8">
               {taskMap[s.id]
                 ? taskMap[s.id].map((_task) => (
-                    <TaskCard key={`${s.id}_${_task.id}`} task={_task} />
+                    <TaskCard key={`${s.id}_${_task.id}`} task={_task} onSaveTask={onSaveTask} />
                   ))
                 : null}
               <Button onClick={() => addTask(s.id)} variant="outlined" fullWidth>

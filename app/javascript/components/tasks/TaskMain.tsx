@@ -11,6 +11,9 @@ type TaskRes = {
     status: Status[];
     tasks: Task[];
   };
+  post: {
+    task: Task;
+  };
 };
 
 const TaskMain: React.FC = () => {
@@ -26,11 +29,18 @@ const TaskMain: React.FC = () => {
     };
     fetchTasks();
   }, []);
+  const onCreateTask = async (task: Task) => {
+    console.log('created');
+    // const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
+    // if (res.data) {
+    //   console.log('created!');
+    // }
+  };
   return (
     <Box>
       <Header />
       <Box sx={{ paddingY: 8 }}>
-        <TaskBoard tasks={tasks} status={status} />
+        <TaskBoard tasks={tasks} status={status} onCreateTask={onCreateTask} />
       </Box>
     </Box>
   );

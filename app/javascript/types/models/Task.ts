@@ -8,3 +8,7 @@ export interface Task extends Model {
   user_id: User['id'];
   thumbnailUrl?: string;
 }
+
+export interface EditableTask extends Task {
+  editable?: boolean;
+}
