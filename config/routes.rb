@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get "/users/me", to: "users#me"
   post "/users/me", to: "users#update"
   post "/registrations/signup", to:"registrations#create"
+  get "/tasks/show", to:"tasks#show"
 
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
