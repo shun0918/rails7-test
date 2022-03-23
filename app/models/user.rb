@@ -1,7 +1,8 @@
 class User < ApplicationRecord
-  has_one :profile
-  has_many :image
   has_secure_password validations: true
+  has_one :profile
+  has_many :user_files
+  has_many :tasks
 
   validates :email, presence: true, uniqueness: true
   validates :password, length: { minimum: 6 }, allow_nil: true

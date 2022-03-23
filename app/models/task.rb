@@ -1,4 +1,5 @@
 class Task < ApplicationRecord
-  belongs_to :statuses
-  belongs_to :user_files
+  belongs_to :taxonomy
+  belongs_to :user_file, optional: true
+  belongs_to :user
 end
