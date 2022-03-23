@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_03_23_010701) do
+ActiveRecord::Schema[7.0].define(version: 2022_03_23_011923) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -51,6 +51,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_23_010701) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "title"
+    t.bigint "taxonomies_id", null: false
+    t.bigint "user_files_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["taxonomies_id"], name: "index_tasks_on_taxonomies_id"
+    t.index ["user_files_id"], name: "index_tasks_on_user_files_id"
+  end
+
   create_table "taxonomies", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "type"
     t.string "name"
@@ -76,5 +86,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_03_23_010701) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "profiles", "users"
+  add_foreign_key "tasks", "taxonomies", column: "taxonomies_id"
+  add_foreign_key "tasks", "user_files", column: "user_files_id"
   add_foreign_key "user_files", "users"
 end
