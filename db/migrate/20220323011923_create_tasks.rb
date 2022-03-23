@@ -3,8 +3,8 @@ class CreateTasks < ActiveRecord::Migration[7.0]
     create_table :tasks do |t|
       t.string :title
       t.references :taxonomy, null: false, foreign_key: true
-      t.references :user_file, null: false, foreign_key: true
-
+      t.references :user_file, null: true, foreign_key: true
+      t.references :user, null: false, foreign_key: true
       t.timestamps
     end
   end
