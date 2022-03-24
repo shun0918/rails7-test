@@ -1,15 +1,16 @@
 import { Button, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useMemo, useState } from 'react';
-import { EditableTask, Task } from '../../types/models/Task';
+import { Task } from '../../types/models/Task';
 
 type Props = {
-  task: Task | EditableTask;
+  task: Task;
+  editable?: boolean;
   onSaveTask: (val: Task) => void;
   onCancel: () => void;
 };
 
-const TaskCard: React.FC<Props> = ({ task, onSaveTask, onCancel }) => {
+const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCancel }) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState<string>('');
   const validate = () => {
@@ -29,7 +30,6 @@ const TaskCard: React.FC<Props> = ({ task, onSaveTask, onCancel }) => {
       ...task,
       title,
     };
-    if ('editable' in newTask) delete newTask.editable;
     onSaveTask(newTask);
   };
   const onEsc = (event: KeyboardEvent) => {
@@ -38,7 +38,7 @@ const TaskCard: React.FC<Props> = ({ task, onSaveTask, onCancel }) => {
     }
   };
   useEffect(() => {
-    if ('editable' in task) {
+    if (editable) {
       document.addEventListener('keyup', onEsc, false);
     }
     return () => {
@@ -59,7 +59,7 @@ const TaskCard: React.FC<Props> = ({ task, onSaveTask, onCancel }) => {
         </div>
       ) : null}
       <div>
-        {'editable' in task && task.editable ? (
+        {editable ? (
           <Box component="form" onSubmit={_onSaveTask}>
             <TextField
               autoFocus

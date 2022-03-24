@@ -1,30 +1,14 @@
-import { Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Status } from '../../types/models/Status';
 import { Task, EditableTask } from '../../types/models/Task';
-import TaskCard from './TaskCard';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-  ResponderProvided,
-} from 'react-beautiful-dnd';
-import styled from '@emotion/styled/types/base';
+import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-dnd';
+import TaskColumn from './TaskColumn';
 
 type Props = {
   tasks: Task[];
   status: Status[];
   onCreateTask: (task: Task) => void;
 };
-
-const _AddButton = styled(Button)({
-  marginTop: 2,
-  variant: 'text',
-  width: '100%',
-  borderStyle: 'dashed',
-  borderWidth: '1px',
-});
 
 const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
   const [taskMap, setTaskMap] = useState<Record<number, (Task | EditableTask)[]>>({});
@@ -40,32 +24,15 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
       ...values,
     });
   };
-  const addTask = (statusId: number) => {
-    const tasks = [
-      ...taskMap[statusId],
-      {
-        id: getDummyId(),
-        title: 'task',
-        user_id: 2,
-        status_id: statusId,
-        editable: true,
-      },
-    ];
-    updateTasksMap({
-      [statusId]: tasks,
-    });
-  };
-  const onSaveTask = (task: Task) => {
+  const _onCreateTask = (task: Task) => {
     const newTasks = [...taskMap[task.status_id].slice(0, -1), task];
     updateTasksMap({
       [task.status_id]: newTasks,
     });
     onCreateTask(task);
   };
-  const onCancelCreate = (task: Task) => {
-    updateTasksMap({
-      [task.status_id]: [...taskMap[task.status_id].slice(0, -1)],
-    });
+  const _onUpdateTask = () => {
+    alert('dummy! _onupdatetask');
   };
   const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
     if (
@@ -117,43 +84,19 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
     <div className="w-screen">
       <div className="mx-8 p-8 rounded-xl bg-blue-50 flex overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
-          {status.map((s) => (
-            <div className="w-64 flex-shrink-0 px-4" key={s.id}>
-              <Typography marginBottom={2}>{s.name}</Typography>
-              <Droppable droppableId={String(s.id)}>
-                {(provided) => (
-                  <ul {...provided.droppableProps} ref={provided.innerRef}>
-                    {taskMap[s.id]
-                      ? taskMap[s.id].map((_task, index) => (
-                          <Draggable
-                            key={`${s.id}_${_task.id}`}
-                            draggableId={`${_task.id}`}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <li
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="mt-8"
-                              >
-                                <TaskCard
-                                  task={_task}
-                                  onSaveTask={onSaveTask}
-                                  onCancel={() => onCancelCreate(_task)}
-                                />
-                              </li>
-                            )}
-                          </Draggable>
-                        ))
-                      : null}
-                    {provided.placeholder}
-                  </ul>
-                )}
-              </Droppable>
-              <_AddButton onClick={() => addTask(s.id)}>Add new task +</_AddButton>
-            </div>
-          ))}
+          {status.map((s) =>
+            taskMap[s.id] ? (
+              <div className="w-64 flex-shrink-0 px-4" key={s.id}>
+                <TaskColumn
+                  getDummyId={getDummyId}
+                  status={s}
+                  tasks={taskMap[s.id]}
+                  onCreateTask={_onCreateTask}
+                  onUpdateTask={_onUpdateTask}
+                />
+              </div>
+            ) : null,
+          )}
         </DragDropContext>
       </div>
     </div>
