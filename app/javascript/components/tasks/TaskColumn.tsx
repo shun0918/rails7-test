@@ -1,5 +1,5 @@
 import { Button, styled, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Status } from '../../types/models/Status';
 import { Task } from '../../types/models/Task';
@@ -37,6 +37,12 @@ const TaskColumn: React.FC<Props> = ({ status, tasks, onCreateTask, onUpdateTask
   const onCancelEdit = (task: Task) => {
     alert('dummy');
   };
+  const _onCreateTask = (task: Task) => {
+    onCreateTask(task);
+  };
+  useEffect(() => {
+    setNewTask(undefined);
+  }, [status, tasks]);
   return (
     <div>
       <Typography marginBottom={2}>{status.name}</Typography>
@@ -62,12 +68,14 @@ const TaskColumn: React.FC<Props> = ({ status, tasks, onCreateTask, onUpdateTask
               </Draggable>
             ))}
             {newTask ? (
-              <TaskCard
-                task={newTask}
-                editable={true}
-                onSaveTask={onCreateTask}
-                onCancel={onCancelCreate}
-              />
+              <div className="mt-4">
+                <TaskCard
+                  task={newTask}
+                  editable={true}
+                  onSaveTask={_onCreateTask}
+                  onCancel={onCancelCreate}
+                />
+              </div>
             ) : null}
             {provided.placeholder}
           </ul>
