@@ -147,7 +147,12 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
                   </ul>
                 )}
               </Droppable>
-              <Button onClick={() => addTask(s.id)} variant="outlined" fullWidth>
+              <Button
+                sx={{ marginTop: 2, borderStyle: 'dashed', borderWidth: '1px' }}
+                onClick={() => addTask(s.id)}
+                variant="text"
+                fullWidth
+              >
                 Add new task +
               </Button>
             </div>
