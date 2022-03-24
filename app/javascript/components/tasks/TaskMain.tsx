@@ -31,10 +31,11 @@ const TaskMain: React.FC = () => {
   }, []);
   const onCreateTask = async (task: Task) => {
     console.log('created');
-    // const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
-    // if (res.data) {
-    //   console.log('created!');
-    // }
+    const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
+    if (res.data) {
+      console.log('created!');
+      setTasks([...tasks, res.data.task]);
+    }
   };
   return (
     <Box>

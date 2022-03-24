@@ -7,4 +7,14 @@ class TasksController < ApplicationController
     @status = Status.all
     render json: { tasks: @tasks, status: @status }
   end
+
+  def create
+    @task = Task.create(task_params)
+    render json: { task: @task }
+  end
+
+  private
+    def task_params
+      params.require(:task).permit(:title, :status_id).merge(user_id: @current_user.id)
+    end
 end
