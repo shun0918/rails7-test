@@ -25,33 +25,36 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
     setDummyId(dummyId - 1);
     return currentId;
   };
-  const addTask = (statusId: number) => {
-    console.log('hogehoge');
+  const updateTasksMap = (values: { [statusId: number]: Task[] }) => {
     setTaskMap({
       ...taskMap,
-      [statusId]: [
-        ...taskMap[statusId],
-        {
-          id: getDummyId(),
-          title: 'task',
-          user_id: 2,
-          status_id: statusId,
-          editable: true,
-        },
-      ],
+      ...values,
+    });
+  };
+  const addTask = (statusId: number) => {
+    const tasks = [
+      ...taskMap[statusId],
+      {
+        id: getDummyId(),
+        title: 'task',
+        user_id: 2,
+        status_id: statusId,
+        editable: true,
+      },
+    ];
+    updateTasksMap({
+      [statusId]: tasks,
     });
   };
   const onSaveTask = (task: Task) => {
     const newTasks = [...taskMap[task.status_id].slice(0, -1), task];
-    setTaskMap({
-      ...taskMap,
+    updateTasksMap({
       [task.status_id]: newTasks,
     });
     onCreateTask(task);
   };
   const onCancelCreate = (task: Task) => {
-    setTaskMap({
-      ...taskMap,
+    updateTasksMap({
       [task.status_id]: [...taskMap[task.status_id].slice(0, -1)],
     });
   };
@@ -74,17 +77,10 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
         : taskMap[Number(result.destination.droppableId)];
     destinationItems.splice(result.destination.index, 0, reorderedItem);
 
-    let newTaskMap = {
-      ...taskMap,
+    updateTasksMap({
+      [result.source.droppableId]: sourceItems,
       [result.destination.droppableId]: destinationItems,
-    };
-    if (result.source.droppableId !== result.destination.droppableId) {
-      newTaskMap = {
-        ...newTaskMap,
-        [result.source.droppableId]: sourceItems,
-      };
-    }
-    setTaskMap(newTaskMap);
+    });
   };
   useEffect(() => {
     const getTaskMap = (): Record<number, Task[]> => {
