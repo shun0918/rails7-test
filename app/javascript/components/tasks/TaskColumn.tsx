@@ -18,7 +18,7 @@ const _AddButton = styled(Button)({
   variant: 'text',
   width: '100%',
   borderStyle: 'dashed',
-  borderWidth: '1px',
+  borderWidth: 1,
 });
 
 const TaskColumn: React.FC<Props> = ({ status, tasks, onCreateTask, onUpdateTask, getDummyId }) => {
