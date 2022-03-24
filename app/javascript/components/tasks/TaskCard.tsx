@@ -1,15 +1,17 @@
 import { Button, TextField } from '@mui/material';
+import { Box } from '@mui/system';
 import React, { useState } from 'react';
 import { EditableTask, Task } from '../../types/models/Task';
 
 type Props = {
   task: Task | EditableTask;
-  onSaveTask: (val: Props['task']) => void;
+  onSaveTask: (val: Task) => void;
 };
 
 const TaskCard: React.FC<Props> = ({ task, onSaveTask }) => {
   const [title, setTitle] = useState('');
-  const _onSaveTask = () => {
+  const _onSaveTask: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
     const newTask = {
       ...task,
       title,
@@ -32,12 +34,17 @@ const TaskCard: React.FC<Props> = ({ task, onSaveTask }) => {
       ) : null}
       <div>
         {'editable' in task && task.editable ? (
-          <div>
-            <TextField value={title} onChange={(e) => setTitle(e.target.value)} size="small" />
-            <Button sx={{ marginTop: 1 }} onClick={_onSaveTask} variant="contained" size="small">
+          <Box component="form" onSubmit={_onSaveTask}>
+            <TextField
+              autoFocus
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              size="small"
+            />
+            <Button type="submit" sx={{ marginTop: 1 }} variant="contained" size="small">
               Save
             </Button>
-          </div>
+          </Box>
         ) : (
           <p>{task.title}</p>
         )}
