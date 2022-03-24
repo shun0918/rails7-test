@@ -47,7 +47,7 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
       if (!status.length || !tasks.length) return {};
       const map: Record<number, Task[]> = {};
       status.forEach(({ id }) => {
-        map[id] = [];
+        if (id) map[id] = [];
       });
       console.log(status);
       console.log(map);
