@@ -10,12 +10,21 @@ import {
   DropResult,
   ResponderProvided,
 } from 'react-beautiful-dnd';
+import styled from '@emotion/styled/types/base';
 
 type Props = {
   tasks: Task[];
   status: Status[];
   onCreateTask: (task: Task) => void;
 };
+
+const _AddButton = styled(Button)({
+  marginTop: 2,
+  variant: 'text',
+  width: '100%',
+  borderStyle: 'dashed',
+  borderWidth: '1px',
+});
 
 const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
   const [taskMap, setTaskMap] = useState<Record<number, (Task | EditableTask)[]>>({});
@@ -59,24 +68,25 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
     });
   };
   const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
-    // const items = Array.from()
-    console.log(result);
-    console.log(provided);
     if (
       !result.destination ||
       (result.destination.droppableId === result.source.droppableId &&
         result.destination.index === result.source.index)
     )
       return;
+
+    // drag元のカラム
     const sourceItems = taskMap[Number(result.source.droppableId)];
-    console.log('sourceItems', sourceItems);
-    const [reorderedItem] = sourceItems.splice(result.source.index, 1);
+    // target: dragされたTask & drag元のカラムから抽出(削除)
+    const [target] = sourceItems.splice(result.source.index, 1);
+    // drop先のカラム
     const destinationItems =
       result.source.droppableId === result.destination.droppableId
         ? sourceItems
         : taskMap[Number(result.destination.droppableId)];
-    destinationItems.splice(result.destination.index, 0, reorderedItem);
-
+    // drop先のカラムにdrop
+    destinationItems.splice(result.destination.index, 0, target);
+    // update state
     updateTasksMap({
       [result.source.droppableId]: sourceItems,
       [result.destination.droppableId]: destinationItems,
@@ -85,12 +95,11 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
   useEffect(() => {
     const getTaskMap = (): Record<number, Task[]> => {
       if (!status.length || !tasks.length) return {};
+
       const map: Record<number, Task[]> = {};
       status.forEach(({ id }) => {
-        if (id) map[id] = [];
+        map[id] = [];
       });
-      console.log(status);
-      console.log(map);
       tasks.forEach((task) => {
         if (!map[task.status_id])
           throw new Error(
@@ -109,7 +118,6 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
       <div className="mx-8 p-8 rounded-xl bg-blue-50 flex overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
           {status.map((s) => (
-            // col
             <div className="w-64 flex-shrink-0 px-4" key={s.id}>
               <Typography marginBottom={2}>{s.name}</Typography>
               <Droppable droppableId={String(s.id)}>
@@ -143,14 +151,7 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
                   </ul>
                 )}
               </Droppable>
-              <Button
-                sx={{ marginTop: 2, borderStyle: 'dashed', borderWidth: '1px' }}
-                onClick={() => addTask(s.id)}
-                variant="text"
-                fullWidth
-              >
-                Add new task +
-              </Button>
+              <_AddButton onClick={() => addTask(s.id)}>Add new task +</_AddButton>
             </div>
           ))}
         </DragDropContext>
