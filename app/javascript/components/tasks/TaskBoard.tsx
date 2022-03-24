@@ -42,6 +42,12 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
     });
     onCreateTask(task);
   };
+  const onCancelCreate = (task: Task) => {
+    setTaskMap({
+      ...taskMap,
+      [task.status_id]: [...taskMap[task.status_id].slice(0, -1)],
+    });
+  };
   useEffect(() => {
     const getTaskMap = (): Record<number, Task[]> => {
       if (!status.length || !tasks.length) return {};
@@ -74,7 +80,12 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
             <div className="grid gap-y-8">
               {taskMap[s.id]
                 ? taskMap[s.id].map((_task) => (
-                    <TaskCard key={`${s.id}_${_task.id}`} task={_task} onSaveTask={onSaveTask} />
+                    <TaskCard
+                      key={`${s.id}_${_task.id}`}
+                      task={_task}
+                      onSaveTask={onSaveTask}
+                      onCancel={() => onCancelCreate(_task)}
+                    />
                   ))
                 : null}
               <Button onClick={() => addTask(s.id)} variant="outlined" fullWidth>
