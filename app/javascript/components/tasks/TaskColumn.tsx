@@ -31,13 +31,16 @@ const TaskColumn: React.FC<Props> = ({
   getDummyId,
 }) => {
   const [newTask, setNewTask] = useState<Task>();
+  const [editable, setEditable] = useState<boolean>(false);
   const onNewTask = () => {
+    if (editable) return;
     setNewTask({
       id: getDummyId(),
-      title: 'task',
+      title: '',
       user_id: 2,
       status_id: status.id,
     });
+    setEditable(true);
   };
   const onCancelCreate = () => {
     setNewTask(undefined);
@@ -47,6 +50,8 @@ const TaskColumn: React.FC<Props> = ({
   };
   const _onCreateTask = (task: Task) => {
     onCreateTask(task);
+    setNewTask({ ...task });
+    setEditable(false);
   };
   useEffect(() => {
     setNewTask(undefined);
@@ -77,21 +82,21 @@ const TaskColumn: React.FC<Props> = ({
               </Draggable>
             ))}
             {newTask ? (
-              <div className="mt-4">
+              <li className="mt-8">
                 <TaskCard
                   task={newTask}
-                  editable={true}
+                  editable={editable}
                   onSaveTask={_onCreateTask}
                   onCancel={onCancelCreate}
                   onDelete={() => {}}
                 />
-              </div>
+              </li>
             ) : null}
             {provided.placeholder}
+            <_AddButton onClick={onNewTask}>Add new task +</_AddButton>
           </ul>
         )}
       </Droppable>
-      <_AddButton onClick={onNewTask}>Add new task +</_AddButton>
     </div>
   );
 };
