@@ -10,6 +10,7 @@ type Props = {
   tasks: Task[];
   onUpdateTask: (task: Task) => void;
   onCreateTask: (task: Task) => void;
+  onDeleteTask: (task: Task, index: number) => void;
   getDummyId: () => number;
 };
 
@@ -21,7 +22,14 @@ const _AddButton = styled(Button)({
   borderWidth: 1,
 });
 
-const TaskColumn: React.FC<Props> = ({ status, tasks, onCreateTask, onUpdateTask, getDummyId }) => {
+const TaskColumn: React.FC<Props> = ({
+  status,
+  tasks,
+  onCreateTask,
+  onUpdateTask,
+  onDeleteTask,
+  getDummyId,
+}) => {
   const [newTask, setNewTask] = useState<Task>();
   const onNewTask = () => {
     setNewTask({
@@ -62,6 +70,7 @@ const TaskColumn: React.FC<Props> = ({ status, tasks, onCreateTask, onUpdateTask
                       task={_task}
                       onSaveTask={onUpdateTask}
                       onCancel={() => onCancelEdit(_task)}
+                      onDelete={() => onDeleteTask(_task, index)}
                     />
                   </li>
                 )}
@@ -74,6 +83,7 @@ const TaskColumn: React.FC<Props> = ({ status, tasks, onCreateTask, onUpdateTask
                   editable={true}
                   onSaveTask={_onCreateTask}
                   onCancel={onCancelCreate}
+                  onDelete={() => {}}
                 />
               </div>
             ) : null}

@@ -14,6 +14,9 @@ type TaskRes = {
   post: {
     task: Task;
   };
+  delete: {
+    task: Task;
+  };
 };
 
 const TaskMain: React.FC = () => {
@@ -37,11 +40,23 @@ const TaskMain: React.FC = () => {
       setTasks([...tasks, res.data.task]);
     }
   };
+  const onDeleteTask = async (task: Task) => {
+    const res = await apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
+    if (res.data) {
+      const deletedTask = res.data.task;
+      setTasks([...tasks.filter((task) => task.id !== deletedTask.id)]);
+    }
+  };
   return (
     <Box>
       <Header />
       <Box sx={{ paddingY: 8 }}>
-        <TaskBoard tasks={tasks} status={status} onCreateTask={onCreateTask} />
+        <TaskBoard
+          tasks={tasks}
+          status={status}
+          onCreateTask={onCreateTask}
+          onDeleteTask={onDeleteTask}
+        />
       </Box>
     </Box>
   );

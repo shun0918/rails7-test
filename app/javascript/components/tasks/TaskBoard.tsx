@@ -8,9 +8,10 @@ type Props = {
   tasks: Task[];
   status: Status[];
   onCreateTask: (task: Task) => void;
+  onDeleteTask: (task: Task) => void;
 };
 
-const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
+const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask, onDeleteTask }) => {
   const [taskMap, setTaskMap] = useState<Record<number, (Task | EditableTask)[]>>({});
   const [dummyId, setDummyId] = useState(0);
   const getDummyId = () => {
@@ -33,6 +34,12 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
   };
   const _onUpdateTask = () => {
     alert('dummy! _onupdatetask');
+  };
+  const _onDeleteTask = (task: Task, index: number) => {
+    const newTasks = [...taskMap[task.status_id]];
+    newTasks.splice(index, 1);
+    updateTasksMap({ [task.status_id]: newTasks });
+    onDeleteTask(task);
   };
   const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
     if (
@@ -93,6 +100,7 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask }) => {
                   tasks={taskMap[s.id]}
                   onCreateTask={_onCreateTask}
                   onUpdateTask={_onUpdateTask}
+                  onDeleteTask={_onDeleteTask}
                 />
               </div>
             ) : null,
