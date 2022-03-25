@@ -97,20 +97,18 @@ const TaskBoard: React.FC<Props> = ({
     <div className="w-screen">
       <div className="mx-8 p-8 rounded-xl bg-blue-50 flex overflow-x-auto">
         <DragDropContext onDragEnd={onDragEnd}>
-          {status.map((s) =>
-            taskMap[s.id] ? (
-              <div className="w-64 flex-shrink-0 px-4" key={s.id}>
-                <TaskColumn
-                  getDummyId={getDummyId}
-                  status={s}
-                  tasks={taskMap[s.id]}
-                  onCreateTask={_onCreateTask}
-                  onUpdateTask={_onUpdateTask}
-                  onDeleteTask={_onDeleteTask}
-                />
-              </div>
-            ) : null,
-          )}
+          {status.map((s) => (
+            <div className="w-64 flex-shrink-0 px-4" key={s.id}>
+              <TaskColumn
+                getDummyId={getDummyId}
+                status={s}
+                tasks={taskMap[s.id] || []}
+                onCreateTask={_onCreateTask}
+                onUpdateTask={_onUpdateTask}
+                onDeleteTask={_onDeleteTask}
+              />
+            </div>
+          ))}
         </DragDropContext>
       </div>
     </div>
