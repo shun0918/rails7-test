@@ -95,6 +95,9 @@ export const apiClient = {
   async post<T = any>(url: string, body: any = {}) {
     return await fetchApi<T>({ method: 'POST', url, body: JSON.stringify(body ?? {}) });
   },
+  async patch<T = any>(url: string, body: any = {}) {
+    return await fetchApi<T>({ method: 'PATCH', url, body: JSON.stringify(body ?? {}) });
+  },
   async delete<T = any>(url: string, body: any = {}) {
     return await fetchApi<T>({ method: 'DELETE', url, body: JSON.stringify(body ?? {}) });
   },
