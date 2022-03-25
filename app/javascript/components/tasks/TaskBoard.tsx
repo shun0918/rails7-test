@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Status } from '../../types/models/Status';
 import { Task, EditableTask } from '../../types/models/Task';
-import { DragDropContext, DropResult, ResponderProvided } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import TaskColumn from './TaskColumn';
 
 type Props = {
@@ -26,10 +26,6 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask, onDeleteTask 
     });
   };
   const _onCreateTask = (task: Task) => {
-    const newTasks = [...taskMap[task.status_id].slice(0, -1), task];
-    updateTasksMap({
-      [task.status_id]: newTasks,
-    });
     onCreateTask(task);
   };
   const _onUpdateTask = () => {
@@ -41,29 +37,28 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask, onDeleteTask 
     updateTasksMap({ [task.status_id]: newTasks });
     onDeleteTask(task);
   };
-  const onDragEnd = (result: DropResult, provided: ResponderProvided) => {
+  const onDragEnd = (result: DropResult) => {
     if (
       !result.destination ||
       (result.destination.droppableId === result.source.droppableId &&
         result.destination.index === result.source.index)
     )
       return;
+    const fromStatusId = Number(result.source.droppableId);
+    const toStatusId = Number(result.destination.droppableId);
 
     // drag元のカラム
-    const sourceItems = taskMap[Number(result.source.droppableId)];
+    const fromTasks = taskMap[fromStatusId];
     // target: dragされたTask & drag元のカラムから抽出(削除)
-    const [target] = sourceItems.splice(result.source.index, 1);
+    const [target] = fromTasks.splice(result.source.index, 1);
     // drop先のカラム
-    const destinationItems =
-      result.source.droppableId === result.destination.droppableId
-        ? sourceItems
-        : taskMap[Number(result.destination.droppableId)];
+    const toTasks = fromStatusId === toStatusId ? fromTasks : taskMap[toStatusId];
     // drop先のカラムにdrop
-    destinationItems.splice(result.destination.index, 0, target);
+    toTasks.splice(result.destination.index, 0, target);
     // update state
     updateTasksMap({
-      [result.source.droppableId]: sourceItems,
-      [result.destination.droppableId]: destinationItems,
+      [result.source.droppableId]: fromTasks,
+      [result.destination.droppableId]: toTasks,
     });
   };
   useEffect(() => {
