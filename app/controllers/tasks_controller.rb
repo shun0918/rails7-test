@@ -13,6 +13,11 @@ class TasksController < ApplicationController
     render json: { task: @task }
   end
 
+  def update
+    @task = Task.find(params[:task][:id])
+    @task.update(task_params)
+  end
+
   def delete
     @task = Task.find(params[:task][:id])
     if @task.user_file_id.presence
