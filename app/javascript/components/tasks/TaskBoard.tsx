@@ -9,9 +9,16 @@ type Props = {
   status: Status[];
   onCreateTask: (task: Task) => void;
   onDeleteTask: (task: Task) => void;
+  onUpdateTask: (task: Task) => void;
 };
 
-const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask, onDeleteTask }) => {
+const TaskBoard: React.FC<Props> = ({
+  tasks,
+  status,
+  onCreateTask,
+  onUpdateTask,
+  onDeleteTask,
+}) => {
   const [taskMap, setTaskMap] = useState<Record<number, (Task | EditableTask)[]>>({});
   const [dummyId, setDummyId] = useState(0);
   const getDummyId = () => {
@@ -59,6 +66,10 @@ const TaskBoard: React.FC<Props> = ({ tasks, status, onCreateTask, onDeleteTask 
     updateTasksMap({
       [result.source.droppableId]: fromTasks,
       [result.destination.droppableId]: toTasks,
+    });
+    onUpdateTask({
+      ...target,
+      status_id: toStatusId,
     });
   };
   useEffect(() => {

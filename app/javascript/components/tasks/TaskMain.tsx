@@ -14,6 +14,9 @@ type TaskRes = {
   post: {
     task: Task;
   };
+  patch: {
+    task: Task;
+  };
   delete: {
     task: Task;
   };
@@ -40,6 +43,14 @@ const TaskMain: React.FC = () => {
       setTasks([...tasks, res.data.task]);
     }
   };
+  const onUpdateTask = async (task: Task) => {
+    const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task });
+    if (res.data) {
+      console.log('updated!');
+      /** @TODO 並び順をデータとして保持すること */
+      // setTasks([...tasks.filter((task) => task.id !== res.data?.task.id)])
+    }
+  };
   const onDeleteTask = async (task: Task) => {
     const res = await apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
     if (res.data) {
@@ -55,6 +66,7 @@ const TaskMain: React.FC = () => {
           tasks={tasks}
           status={status}
           onCreateTask={onCreateTask}
+          onUpdateTask={onUpdateTask}
           onDeleteTask={onDeleteTask}
         />
       </Box>
