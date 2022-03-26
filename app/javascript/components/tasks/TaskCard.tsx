@@ -72,6 +72,7 @@ const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCance
           <Box component="form" onSubmit={_onSaveTask}>
             <TextField
               autoFocus
+              autoComplete="off"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               size="small"
