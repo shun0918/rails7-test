@@ -5,3 +5,4 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+Taxonomy.create([{ type: 'Status' name: 'To do'}, { type: 'Status', name: 'Doing'}, { type: 'Status', name: 'Done'}])
