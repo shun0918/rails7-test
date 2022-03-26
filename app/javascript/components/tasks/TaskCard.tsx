@@ -53,7 +53,7 @@ const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCance
     return () => {
       document.removeEventListener('keyup', onEsc, false);
     };
-  }, []);
+  }, [editable]);
   return (
     <div className="relative rounded-lg p-4 shadow-md bg-white">
       {task.thumbnailUrl ? (
