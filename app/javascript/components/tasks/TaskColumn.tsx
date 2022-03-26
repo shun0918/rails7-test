@@ -34,23 +34,23 @@ const TaskColumn: React.FC<Props> = ({
   const [editable, setEditable] = useState<boolean>(false);
   const onNewTask = () => {
     if (editable) return;
+    setEditable(true);
     setNewTask({
       id: getDummyId(),
       title: '',
       user_id: 2,
       status_id: status.id,
     });
-    setEditable(true);
   };
   const onCancelCreate = () => {
     setNewTask(undefined);
+    setEditable(false);
   };
   const onCancelEdit = (task: Task) => {
     alert('dummy');
   };
   const _onCreateTask = (task: Task) => {
     onCreateTask(task);
-    setNewTask({ ...task });
     setEditable(false);
   };
   useEffect(() => {
