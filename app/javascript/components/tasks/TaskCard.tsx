@@ -97,14 +97,17 @@ const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCance
           <p className="break-words">{task.title}</p>
         )}
       </div>
-      <div className="absolute top-2 right-2">
-        <div className="relative" ref={menuElm} id={taskCardId}>
-          <IconButton onClick={onClickMenu} aria-label="Example">
-            <MoreHorizIcon />
-          </IconButton>
-          {isOpenMenu ? <TaskCardInnerMenu onDelete={onDelete} /> : null}
+      {
+        editable ? null :
+        <div className="absolute top-2 right-2">
+          <div className="relative" ref={menuElm} id={taskCardId}>
+            <IconButton onClick={onClickMenu} aria-label="Example">
+              <MoreHorizIcon />
+            </IconButton>
+            {isOpenMenu ? <TaskCardInnerMenu onDelete={onDelete} /> : null}
+          </div>
         </div>
-      </div>
+      }
     </div>
   );
 };
