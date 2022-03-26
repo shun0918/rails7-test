@@ -1,5 +1,5 @@
 import { Button, styled, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Status } from '../../types/models/Status';
 import { Task } from '../../types/models/Task';
@@ -51,11 +51,9 @@ const TaskColumn: React.FC<Props> = ({
   };
   const _onCreateTask = (task: Task) => {
     onCreateTask(task);
+    setNewTask(undefined);
     setEditable(false);
   };
-  useEffect(() => {
-    setNewTask(undefined);
-  }, [status, tasks]);
   return (
     <div>
       <Typography marginBottom={2}>{status.name}</Typography>
