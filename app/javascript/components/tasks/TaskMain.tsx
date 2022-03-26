@@ -43,8 +43,8 @@ const TaskMain: React.FC = () => {
       setTasks([...tasks, res.data.task]);
     }
   };
-  const onUpdateTask = async (task: Task) => {
-    const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task });
+  const onUpdateTask = async (task: Task, index: number) => {
+    const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task, index });
     if (res.data) {
       console.log('updated!');
       /** @TODO 並び順をデータとして保持すること */

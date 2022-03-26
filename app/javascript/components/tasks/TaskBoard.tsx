@@ -9,7 +9,7 @@ type Props = {
   status: Status[];
   onCreateTask: (task: Task) => void;
   onDeleteTask: (task: Task) => void;
-  onUpdateTask: (task: Task) => void;
+  onUpdateTask: (task: Task, index: number) => void;
 };
 
 const TaskBoard: React.FC<Props> = ({
@@ -67,10 +67,13 @@ const TaskBoard: React.FC<Props> = ({
       [result.source.droppableId]: fromTasks,
       [result.destination.droppableId]: toTasks,
     });
-    onUpdateTask({
-      ...target,
-      status_id: toStatusId,
-    });
+    onUpdateTask(
+      {
+        ...target,
+        status_id: toStatusId,
+      },
+      result.destination.index,
+    );
   };
   useEffect(() => {
     const getTaskMap = (): Record<number, Task[]> => {
