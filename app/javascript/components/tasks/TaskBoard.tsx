@@ -10,6 +10,7 @@ type Props = {
   onCreateTask: (task: Task) => void;
   onDeleteTask: (task: Task) => void;
   onUpdateTask: (task: Task, index: number) => void;
+  onShowTaskDetail: (task: Task) => void;
 };
 
 const TaskBoard: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const TaskBoard: React.FC<Props> = ({
   onCreateTask,
   onUpdateTask,
   onDeleteTask,
+  onShowTaskDetail,
 }) => {
   const [taskMap, setTaskMap] = useState<Record<number, (Task | EditableTask)[]>>({});
   const [dummyId, setDummyId] = useState(0);
@@ -109,6 +111,7 @@ const TaskBoard: React.FC<Props> = ({
                 onCreateTask={_onCreateTask}
                 onUpdateTask={_onUpdateTask}
                 onDeleteTask={_onDeleteTask}
+                onShowTaskDetail={onShowTaskDetail}
               />
             </div>
           ))}

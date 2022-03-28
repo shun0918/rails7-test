@@ -5,6 +5,7 @@ import { Status } from '../../types/models/Status';
 import { Task } from '../../types/models/Task';
 import Header from '../global/Header';
 import TaskBoard from './TaskBoard';
+import TaskDetailModal from './TaskDetailModal';
 
 type TaskRes = {
   get: {
@@ -23,6 +24,8 @@ type TaskRes = {
 };
 
 const TaskMain: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [modalTask, setModalTask] = useState<Task>();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [status, setStatus] = useState<Status[]>([]);
   useEffect(() => {
@@ -43,7 +46,7 @@ const TaskMain: React.FC = () => {
       setTasks([...tasks, res.data.task]);
     }
   };
-  const onUpdateTask = async (task: Task, index: number) => {
+  const onUpdateTask = async (task: Task, index?: number) => {
     const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task, index });
     if (res.data) {
       console.log('updated!');
@@ -58,6 +61,13 @@ const TaskMain: React.FC = () => {
       setTasks([...tasks.filter((task) => task.id !== deletedTask.id)]);
     }
   };
+  const onShowTaskDetail = (task: Task) => {
+    setModalTask(task);
+    setModalOpen(true);
+  };
+  const onCloseModal = () => {
+    setModalOpen(false);
+  };
   return (
     <Box>
       <Header />
@@ -68,8 +78,17 @@ const TaskMain: React.FC = () => {
           onCreateTask={onCreateTask}
           onUpdateTask={onUpdateTask}
           onDeleteTask={onDeleteTask}
+          onShowTaskDetail={onShowTaskDetail}
         />
       </Box>
+      {modalTask ? (
+        <TaskDetailModal
+          open={modalOpen}
+          onClose={onCloseModal}
+          task={modalTask}
+          onUpdateTask={onUpdateTask}
+        />
+      ) : null}
     </Box>
   );
 };

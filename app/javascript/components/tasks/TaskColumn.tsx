@@ -11,6 +11,7 @@ type Props = {
   onUpdateTask: (task: Task) => void;
   onCreateTask: (task: Task) => void;
   onDeleteTask: (task: Task, index: number) => void;
+  onShowTaskDetail: (task: Task) => void;
   getDummyId: () => number;
 };
 
@@ -28,6 +29,7 @@ const TaskColumn: React.FC<Props> = ({
   onCreateTask,
   onUpdateTask,
   onDeleteTask,
+  onShowTaskDetail,
   getDummyId,
 }) => {
   const [newTask, setNewTask] = useState<Task>();
@@ -74,6 +76,7 @@ const TaskColumn: React.FC<Props> = ({
                       onSaveTask={onUpdateTask}
                       onCancel={() => onCancelEdit(_task)}
                       onDelete={() => onDeleteTask(_task, index)}
+                      onClick={() => onShowTaskDetail(_task)}
                     />
                   </li>
                 )}
@@ -86,6 +89,7 @@ const TaskColumn: React.FC<Props> = ({
                   editable={editable}
                   onSaveTask={_onCreateTask}
                   onCancel={onCancelCreate}
+                  onClick={() => {}}
                   onDelete={() => {}}
                 />
               </li>

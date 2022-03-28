@@ -16,6 +16,13 @@ class TasksController < ApplicationController
 
   def update
     @task = Task.find(params[:task][:id])
+
+    # 並び順以外の修正
+    if params[:index].nil?
+      @task.update(task_params(pos: @task.pos))
+      render json: { task: @task } and return
+    end
+
     if params[:index] == 0
       pos = (Task.where(user_id: @current_user.id, status_id: params[:task][:status_id]).minimum(:pos) || 1) / 2
     else

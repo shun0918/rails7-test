@@ -11,9 +11,17 @@ type Props = {
   onSaveTask: (val: Task) => void;
   onCancel: () => void;
   onDelete: () => void;
+  onClick: () => void;
 };
 
-const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCancel, onDelete }) => {
+const TaskCard: React.FC<Props> = ({
+  task,
+  editable = false,
+  onSaveTask,
+  onCancel,
+  onDelete,
+  onClick,
+}) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState<string>('');
   const taskCardId = useMemo(() => `task_card_menu_${task.id}`, [task]);
@@ -97,9 +105,9 @@ const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCance
           <p className="break-words">{task.title}</p>
         )}
       </div>
-      {
-        editable ? null :
+      {editable ? null : (
         <div className="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-100 transition-opacity">
+          <a onClick={onClick} className="w-full h-full block cursor-pointer"></a>
           <div className="absolute top-2 right-2">
             <div className="relative" ref={menuElm} id={taskCardId}>
               <IconButton onClick={onClickMenu} aria-label="Example">
@@ -109,7 +117,7 @@ const TaskCard: React.FC<Props> = ({ task, editable = false, onSaveTask, onCance
             </div>
           </div>
         </div>
-      }
+      )}
     </div>
   );
 };
