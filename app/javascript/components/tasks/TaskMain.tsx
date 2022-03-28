@@ -50,6 +50,9 @@ const TaskMain: React.FC = () => {
     const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task, index });
     if (res.data) {
       console.log('updated!');
+      if (modalOpen) {
+        setModalTask(res.data.task);
+      }
       /** @TODO 並び順をデータとして保持すること */
       // setTasks([...tasks.filter((task) => task.id !== res.data?.task.id)])
     }

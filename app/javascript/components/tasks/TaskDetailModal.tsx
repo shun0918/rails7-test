@@ -20,10 +20,12 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: '#fff',
-  borderRadius: 8,
+  borderRadius: 2,
   boxShadow: 24,
   p: 4,
 };
+
+const ButtonBox = { display: 'flex', justifyContent: 'end', marginTop: 2 };
 
 const TaskDetailModal: React.FC<Props> = ({ open, task, onClose, onUpdateTask }) => {
   const [title, setTitle] = useState(task?.title ?? '');
@@ -36,14 +38,18 @@ const TaskDetailModal: React.FC<Props> = ({ open, task, onClose, onUpdateTask })
     setEditable(false);
   };
   const _onClose = () => {
-    setEditable(false);
-    onClose();
+    closeModal();
   };
   const _onUpdateTask = () => {
     onUpdateTask({
       ...task,
       title,
     });
+    setEditable(false);
+  };
+  const closeModal = () => {
+    setEditable(false);
+    onClose();
   };
   return (
     <Modal
@@ -59,24 +65,29 @@ const TaskDetailModal: React.FC<Props> = ({ open, task, onClose, onUpdateTask })
               autoFocus
               autoComplete="off"
               value={title}
+              fullWidth
               onChange={(e) => setTitle(e.target.value)}
               size="small"
             />
-            <Button size="small" startIcon={<CancelIcon />} onClick={onCancelEdit}>
-              Cancel
-            </Button>
-            <Button size="small" startIcon={<SaveIcon />} onClick={_onUpdateTask}>
-              Save
-            </Button>
+            <Box sx={ButtonBox}>
+              <Button size="small" startIcon={<CancelIcon />} onClick={onCancelEdit}>
+                Cancel
+              </Button>
+              <Button size="small" startIcon={<SaveIcon />} onClick={_onUpdateTask}>
+                Save
+              </Button>
+            </Box>
           </>
         ) : (
           <>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {task.title}
             </Typography>
-            <Button size="small" startIcon={<EditIcon />} onClick={onEdit}>
-              Edit
-            </Button>
+            <Box sx={ButtonBox}>
+              <Button size="small" startIcon={<EditIcon />} onClick={onEdit}>
+                Edit
+              </Button>
+            </Box>
           </>
         )}
       </Box>
