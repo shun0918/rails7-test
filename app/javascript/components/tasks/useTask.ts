@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import createBoardChannel from '../../channels/board_channel';
 import { apiClient } from '../../libs/api/client';
 import { Status } from '../../types/models/Status';
 import { Task } from '../../types/models/Task';
@@ -25,7 +26,7 @@ const useTask = () => {
   const [taskMap, setTaskMap] = useState<Record<number, Task[]>>({});
 
   const _getTaskMap = (): Record<number, Task[]> => {
-    if (!status.current.length || !tasks.current.length) return {};
+    if (!status.current.length) return {};
 
     const map: Record<number, Task[]> = {};
     status.current.forEach(({ id }) => {
@@ -66,8 +67,6 @@ const useTask = () => {
   };
 
   const createTask = async (task: Task) => {
-    const newTasks = [...taskMap[task.status_id], task];
-    _updateTaskMap({ [task.status_id]: newTasks });
     const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
     if (res.data) {
       tasks.current = [...tasks.current, res.data.task];
@@ -125,6 +124,20 @@ const useTask = () => {
   useEffect(() => {
     _fetchTasks();
   }, []);
+
+  createBoardChannel({
+    connected() {
+      console.log('connected.');
+    },
+    disconnected() {
+      console.log('disconnected.');
+    },
+    received({ task }) {
+      const newTasks = [...(taskMap[task.status_id] ?? []), task];
+      _updateTaskMap({ [task.status_id]: newTasks });
+    },
+  });
+
   return {
     status,
     taskMap,
