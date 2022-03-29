@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
+    "@types/rails__actioncable": "^6.1.6",
     "@types/react": "^17.0.39",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^17.0.13",
