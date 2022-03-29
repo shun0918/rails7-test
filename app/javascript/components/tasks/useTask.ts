@@ -66,6 +66,8 @@ const useTask = () => {
   };
 
   const createTask = async (task: Task) => {
+    const newTasks = [...taskMap[task.status_id], task];
+    _updateTaskMap({ [task.status_id]: newTasks });
     const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
     if (res.data) {
       tasks.current = [...tasks.current, res.data.task];
@@ -74,12 +76,11 @@ const useTask = () => {
 
   const deleteTask = async (task: Task, index: number) => {
     if (!taskMap) throw new Error('taskMap is undefined!');
-
-    apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
-
     const newTasks = [...taskMap[task.status_id]];
     newTasks.splice(index, 1);
     _updateTaskMap({ [task.status_id]: newTasks });
+
+    apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
   };
 
   const replaceTask = (result: {
