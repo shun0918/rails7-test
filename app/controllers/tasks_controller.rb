@@ -10,7 +10,7 @@ class TasksController < ApplicationController
 
   def create
     max_pos = Task.where(user_id: @current_user.id).maximum(:pos) || 0
-    @task = Task.create(task_params pos: max_pos += 1)
+    @task = Task.create(task_params pos: max_pos + 1)
     render json: { task: @task }
   end
 
