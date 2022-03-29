@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiClient } from '../../libs/api/client';
 import { Status } from '../../types/models/Status';
 import { Task } from '../../types/models/Task';
@@ -19,19 +19,19 @@ type TaskRes = {
   };
 };
 
-const useTaskState = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [status, setStatus] = useState<Status[]>([]);
-  const [taskMap, setTaskMap] = useState<Record<number, Task[]>>();
+const useTask = () => {
+  const tasks = useRef<Task[]>([]);
+  const status = useRef<Status[]>([]);
+  const [taskMap, setTaskMap] = useState<Record<number, Task[]>>({});
 
   const _getTaskMap = (): Record<number, Task[]> => {
-    if (!status.length || !tasks.length) return {};
+    if (!status.current.length || !tasks.current.length) return {};
 
     const map: Record<number, Task[]> = {};
-    status.forEach(({ id }) => {
+    status.current.forEach(({ id }) => {
       map[id] = [];
     });
-    tasks.forEach((task) => {
+    tasks.current.forEach((task) => {
       if (!map[task.status_id])
         throw new Error(
           `'Invalid status object exists. statusId: '${task.status_id} val: ${map[task.status_id]}`,
@@ -44,17 +44,9 @@ const useTaskState = () => {
   const _fetchTasks = async () => {
     const res = await apiClient.get<TaskRes['get']>('/tasks/show');
     if (res.data) {
-      setTasks(res.data.tasks);
-      setStatus(res.data.status);
+      tasks.current = res.data.tasks;
+      status.current = res.data.status;
       setTaskMap(_getTaskMap());
-    }
-  };
-
-  const createTask = async (task: Task) => {
-    const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
-    if (res.data) {
-      console.log('created!');
-      setTasks([...tasks, res.data.task]);
     }
   };
 
@@ -66,19 +58,28 @@ const useTaskState = () => {
     }
   };
 
-  const deleteTask = async (task: Task) => {
-    const res = await apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
-    if (res.data) {
-      const deletedTask = res.data.task;
-      setTasks([...tasks.filter((task) => task.id !== deletedTask.id)]);
-    }
-  };
-
-  const updateTaskMap = (values: { [statusId: number]: Task[] }) => {
+  const _updateTaskMap = (values: { [statusId: number]: Task[] }) => {
     setTaskMap({
       ...taskMap,
       ...values,
     });
+  };
+
+  const createTask = async (task: Task) => {
+    const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
+    if (res.data) {
+      tasks.current = [...tasks.current, res.data.task];
+    }
+  };
+
+  const deleteTask = async (task: Task, index: number) => {
+    if (!taskMap) throw new Error('taskMap is undefined!');
+
+    apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
+
+    const newTasks = [...taskMap[task.status_id]];
+    newTasks.splice(index, 1);
+    _updateTaskMap({ [task.status_id]: newTasks });
   };
 
   const replaceTask = (result: {
@@ -93,7 +94,7 @@ const useTaskState = () => {
     const toTasks =
       result.fromStatusId === result.toStatusId ? fromTasks : taskMap[result.toStatusId];
     toTasks.splice(result.toIndex, 0, target);
-    updateTaskMap({
+    _updateTaskMap({
       [result.fromStatusId]: fromTasks,
       [result.toStatusId]: toTasks,
     });
@@ -114,7 +115,7 @@ const useTaskState = () => {
       1,
       task,
     );
-    updateTaskMap({
+    _updateTaskMap({
       [task.status_id]: newTasks,
     });
     _updateTask(task);
@@ -122,7 +123,7 @@ const useTaskState = () => {
 
   useEffect(() => {
     _fetchTasks();
-  });
+  }, []);
   return {
     status,
     taskMap,
@@ -133,4 +134,4 @@ const useTaskState = () => {
   };
 };
 
-export default useTaskState;
+export default useTask;
