@@ -32,6 +32,7 @@ const TaskMain: React.FC = () => {
     replaceTask(result);
   };
   const onEditTask = (task: Task) => {
+    setModalTask(task);
     editTask(task);
   };
   return (
