@@ -34,6 +34,7 @@ class TasksController < ApplicationController
       pos = @tasks.size < 2 ? @tasks.last[:pos] + 1 : (@tasks[0][:pos] + @tasks[1][:pos]) / 2
     end
     @task.update(task_params(pos: pos))
+    render json: { task: @task }
   end
 
   def delete
