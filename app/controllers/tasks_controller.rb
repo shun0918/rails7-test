@@ -24,14 +24,14 @@ class TasksController < ApplicationController
     end
 
     if params[:index] == 0
-      pos = (Task.where(user_id: @current_user.id, status_id: params[:task][:status_id]).minimum(:pos) || 1) / 2
+      pos = (Task.where(user_id: @current_user.id, status_id: params[:task][:status_id]).minimum(:pos) || 1.0) / 2
     else
       @tasks = Task.where(user_id: @current_user.id, status_id: params[:task][:status_id])
           .where.not(id: @task.id)
           .order(:pos)
           .limit(2)
           .offset(params[:index] - 1)
-      pos = @tasks.size < 2 ? @tasks.last[:pos] + 1 : (@tasks[0][:pos] + @tasks[1][:pos]) / 2
+      pos = @tasks.size < 2 ? @tasks.last[:pos] + 1.0 : (@tasks[0][:pos] + @tasks[1][:pos]) / 2
     end
     @task.update(task_params(pos: pos))
     render json: { task: @task }
