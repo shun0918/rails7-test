@@ -12,7 +12,7 @@ class TasksController < ApplicationController
     max_pos = Task.where(user_id: @current_user.id).maximum(:pos) || 0
     @task = Task.create(task_params pos: max_pos + 1)
     if @task.present?
-      ActionCable.server.broadcast("task_board_#{@current_user.id.to_s}", {task: @task})
+      BoardChannel.broadcast_to(@current_user, {task: @task})
     end
     render json: { task: @task }
   end

@@ -1,7 +1,6 @@
 class BoardChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
-    stream_from "task_board_#{current_user.id.to_s}"
+    stream_for current_user
   end
 
   def unsubscribed
