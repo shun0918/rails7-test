@@ -36,17 +36,20 @@ class TasksController < ApplicationController
           .offset(params[:index] - 1)
       pos = @tasks.size < 2 ? @tasks.last[:pos] + 1.0 : (@tasks[0][:pos] + @tasks[1][:pos]) / 2
     end
-    @task.update(task_params(pos: pos))
+    if @task.update(task_params(pos: pos))
+      BoardChannel.broadcast_to(@current_user, {task: @task, index: params[:index]})
+    end
     render json: { task: @task }
   end
 
-  def delete
+  def destroy
     @task = Task.find(params[:task][:id])
     if @task.user_file_id.presence
       @task.user_file.destroy
     end
-    @task.destroy
-
+    if @task.destroy
+      BoardChannel.broadcast_to(@current_user, {task: @task, destroyed: true})
+    end
     render json: { task: @task }
   end
 

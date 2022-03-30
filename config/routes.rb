@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   get "/tasks/show", to: "tasks#show"
   post "/tasks/new", to: "tasks#create"
   patch "/tasks/update", to: "tasks#update"
-  delete "/tasks/delete", to: "tasks#delete"
+  delete "/tasks/delete", to: "tasks#destroy"
 
   post   '/login',   to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
