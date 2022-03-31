@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import createBoardChannel from '../../channels/board_channel';
+import BoardChannel from '../../channels/board_channel';
 import { apiClient } from '../../libs/api/client';
 import { Status } from '../../types/models/Status';
 import { Task } from '../../types/models/Task';
@@ -24,6 +24,7 @@ const useTask = () => {
   const tasks = useRef<Task[]>([]);
   const status = useRef<Status[]>([]);
   const [taskMap, setTaskMap] = useState<Record<number, Task[]>>({});
+  // const channel = useMemo(() => createBoardChannel.({ received: _received }), [taskMap]);
 
   const _getTaskMap = (): Record<number, Task[]> => {
     if (!status.current.length) return {};
@@ -54,12 +55,11 @@ const useTask = () => {
   const _updateTask = async (task: Task, index?: number) => {
     const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task, index });
     if (res.data) {
-      /** @TODO 並び順をデータとして保持すること */
-      // setTasks([...tasks.filter((task) => task.id !== res.data?.task.id)])
     }
   };
 
   const _updateTaskMap = (values: { [statusId: number]: Task[] }) => {
+    console.log('_updateTaskMap.values: ', values);
     setTaskMap({
       ...taskMap,
       ...values,
@@ -69,16 +69,10 @@ const useTask = () => {
   const createTask = async (task: Task) => {
     const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
     if (res.data) {
-      tasks.current = [...tasks.current, res.data.task];
     }
   };
 
   const deleteTask = async (task: Task, index: number) => {
-    if (!taskMap) throw new Error('taskMap is undefined!');
-    const newTasks = [...taskMap[task.status_id]];
-    newTasks.splice(index, 1);
-    _updateTaskMap({ [task.status_id]: newTasks });
-
     apiClient.delete<TaskRes['delete']>('/tasks/delete', { task });
   };
 
@@ -89,18 +83,9 @@ const useTask = () => {
     toIndex: number;
   }) => {
     if (!taskMap) throw new Error('taskMap is undefined!');
-    const fromTasks = taskMap[result.fromStatusId];
-    const [target] = fromTasks.splice(result.fromIndex, 1);
-    const toTasks =
-      result.fromStatusId === result.toStatusId ? fromTasks : taskMap[result.toStatusId];
-    toTasks.splice(result.toIndex, 0, target);
-    _updateTaskMap({
-      [result.fromStatusId]: fromTasks,
-      [result.toStatusId]: toTasks,
-    });
     _updateTask(
       {
-        ...target,
+        ...taskMap[result.fromStatusId][result.fromIndex],
         status_id: result.toStatusId,
       },
       result.toIndex,
@@ -121,22 +106,64 @@ const useTask = () => {
     _updateTask(task);
   };
 
+  const _received = ({
+    task,
+    destroyed,
+    index,
+  }: {
+    task: Task;
+    destroyed?: boolean;
+    index?: number;
+  }) => {
+    console.log('index: ', index);
+    console.log('destroyed: ', destroyed);
+    console.log('task: ', task);
+    // DELETE・・・ターゲット削除
+    // CREATE・・・ターゲット挿入
+    // UPDATE・・・DELETE ＆ CREATE
+
+    // tasks内ターゲット特定
+    let oldTaskIndex = tasks.current.findIndex(({ id }) => id === task.id);
+
+    // ターゲットが存在しない -> CREATE
+    if (oldTaskIndex === -1) {
+      const newTasks = [...(taskMap[task.status_id] ?? []), task];
+      _updateTaskMap({ [task.status_id]: newTasks });
+      return;
+    }
+
+    // DELETE
+    const [oldTask] = tasks.current.splice(oldTaskIndex, 1); // しれっとtasksから削除
+    const fromTasks = [...taskMap[oldTask.status_id]];
+    oldTaskIndex = fromTasks.findIndex(({ id }) => id === oldTask.id);
+    fromTasks.splice(oldTaskIndex, 1);
+
+    if (destroyed) {
+      _updateTaskMap({ [oldTask.status_id]: fromTasks });
+      return;
+    }
+
+    // UPDATE(DELETE済なのでCREATEのみ)
+    const toTasks =
+      task.status_id === oldTask.status_id ? [...fromTasks] : taskMap[task.status_id] ?? [];
+    console.log('oldTaskIndex ', oldTaskIndex);
+    console.log('fromTasks', fromTasks);
+    console.log('toTasks', toTasks);
+    toTasks.splice(index ?? oldTaskIndex, 0, task);
+    tasks.current.push(task);
+    _updateTaskMap({
+      [oldTask.status_id]: fromTasks,
+      [task.status_id]: toTasks,
+    });
+  };
+
   useEffect(() => {
     _fetchTasks();
   }, []);
-
-  createBoardChannel({
-    connected() {
-      console.log('connected.');
-    },
-    disconnected() {
-      console.log('disconnected.');
-    },
-    received({ task }) {
-      const newTasks = [...(taskMap[task.status_id] ?? []), task];
-      _updateTaskMap({ [task.status_id]: newTasks });
-    },
-  });
+  useEffect(() => {
+    console.log('changed');
+    BoardChannel.received = _received;
+  }, [taskMap]);
 
   return {
     status,
