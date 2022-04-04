@@ -24,7 +24,6 @@ const useTask = () => {
   const tasks = useRef<Task[]>([]);
   const status = useRef<Status[]>([]);
   const [taskMap, setTaskMap] = useState<Record<number, Task[]>>({});
-  // const channel = useMemo(() => createBoardChannel.({ received: _received }), [taskMap]);
 
   const _getTaskMap = (): Record<number, Task[]> => {
     if (!status.current.length) return {};
@@ -53,9 +52,7 @@ const useTask = () => {
   };
 
   const _updateTask = async (task: Task, index?: number) => {
-    const res = await apiClient.patch<TaskRes['patch']>('/tasks/update', { task, index });
-    if (res.data) {
-    }
+    await apiClient.patch<TaskRes['patch']>('/tasks/update', { task, index });
   };
 
   const _updateTaskMap = (values: { [statusId: number]: Task[] }) => {
@@ -66,9 +63,7 @@ const useTask = () => {
   };
 
   const createTask = async (task: Task) => {
-    const res = await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
-    if (res.data) {
-    }
+    await apiClient.post<TaskRes['post']>('/tasks/new', { task: task });
   };
 
   const deleteTask = async (task: Task, index: number) => {
