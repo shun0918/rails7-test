@@ -59,7 +59,6 @@ const useTask = () => {
   };
 
   const _updateTaskMap = (values: { [statusId: number]: Task[] }) => {
-    console.log('_updateTaskMap.values: ', values);
     setTaskMap({
       ...taskMap,
       ...values,
@@ -115,13 +114,6 @@ const useTask = () => {
     destroyed?: boolean;
     index?: number;
   }) => {
-    console.log('index: ', index);
-    console.log('destroyed: ', destroyed);
-    console.log('task: ', task);
-    // DELETE・・・ターゲット削除
-    // CREATE・・・ターゲット挿入
-    // UPDATE・・・DELETE ＆ CREATE
-
     // tasks内ターゲット特定
     let oldTaskIndex = tasks.current.findIndex(({ id }) => id === task.id);
 
@@ -146,9 +138,6 @@ const useTask = () => {
     // UPDATE(DELETE済なのでCREATEのみ)
     const toTasks =
       task.status_id === oldTask.status_id ? [...fromTasks] : taskMap[task.status_id] ?? [];
-    console.log('oldTaskIndex ', oldTaskIndex);
-    console.log('fromTasks', fromTasks);
-    console.log('toTasks', toTasks);
     toTasks.splice(index ?? oldTaskIndex, 0, task);
     tasks.current.push(task);
     _updateTaskMap({
@@ -161,7 +150,6 @@ const useTask = () => {
     _fetchTasks();
   }, []);
   useEffect(() => {
-    console.log('changed');
     BoardChannel.received = _received;
   }, [taskMap]);
 
